@@ -240,11 +240,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
   gap: 12px;
   flex: none;
 }
-.brand__mark { width: 38px; height: 38px; }
-.brand__mark--dark { display: none; }
-.is-solid .brand__mark--light { display: none; }
-.is-solid .brand__mark--dark { display: block; }
-.brand__text { display: flex; flex-direction: column; line-height: 1.15; }
+.brand__logo { width: auto; height: 30px; }
+.brand__logo--dark { display: none; }
+.is-solid .brand__logo--light { display: none; }
+.is-solid .brand__logo--dark { display: block; }
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.35);
+  line-height: 1.15;
+}
+.is-solid .brand__text { border-left-color: var(--line-2); }
 .brand__text b {
   font-size: 17px;
   font-weight: 800;
@@ -1067,8 +1074,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .burger { display: block; }
   .site-header__cta { display: none; }
   .site-header.menu-open { color: var(--ink); background: #fff; }
-  .site-header.menu-open .brand__mark--light { display: none; }
-  .site-header.menu-open .brand__mark--dark { display: block; }
+  .site-header.menu-open .brand__logo--light { display: none; }
+  .site-header.menu-open .brand__logo--dark { display: block; }
+  .site-header.menu-open .brand__text { border-left-color: var(--line-2); }
   .site-header.menu-open .brand__text b { color: var(--navy-900); }
   .site-header.menu-open .burger { border-color: var(--line); }
   .site-header.menu-open .burger span { background: var(--navy-900); }
@@ -1129,7 +1137,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 @media (max-width: 640px) {
-  .brand__mark { width: 34px; height: 34px; }
+  .brand__logo { height: 27px; }
   .brand__text b { font-size: 16px; }
   .site-header__tools { gap: 10px; }
 
@@ -1178,6 +1186,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .site-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 24px; }
   .site-footer__contact { grid-column: 1 / -1; }
   .site-footer__bottom { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .site-header .brand__text { display: none; }
 }
 
 @media (max-width: 380px) {
