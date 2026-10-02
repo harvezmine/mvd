@@ -27,7 +27,7 @@ Pengunjung ──HTTPS──▶ Cloudflare (DNS, TLS, cache)
 
 | Path | Fungsi |
 |---|---|
-| `public/` | Seluruh isi situs: `index.html`, `404.html`, `assets/`, `favicon.svg`, `robots.txt`, `sitemap.xml` |
+| `public/` | Seluruh isi situs: `index.html`, `404.html`, `assets/`, favicon (`favicon.ico/.svg`, `favicon-32.png`), `site.webmanifest`, `robots.txt`, `sitemap.xml` |
 | `server.js` | Server statis (Node ≥ 18, tanpa dependensi). Ada endpoint `/healthz` |
 | `ecosystem.config.cjs` | Konfigurasi PM2: nama app `mvd-web`, port `3200`, host `127.0.0.1` |
 | `package.json` | Metadata dan skrip pintas (`npm run pm2:start`, dll.) |
@@ -252,7 +252,7 @@ Selama kosong, kontak tampil "Segera tersedia" dan formulir menampilkan
 pemberitahuan bahwa kontak belum aktif. Checklist lain:
 
 - [ ] Tambahkan `email`, `telephone`, dan NIB ke JSON-LD `Organization` di `public/index.html`.
-- [ ] Ganti logo placeholder: `public/assets/img/mvd-mark.svg`, `mvd-mark-light.svg`, dan `public/favicon.svg`.
+- [x] Logo resmi sudah terpasang (`public/assets/img/brand/`). Sumber aslinya `public/assets/logo-putih.png`.
 - [ ] Ganti foto Unsplash dengan foto tim/kantor asli (`public/assets/img/photos/`, kredit di `CREDITS.md`).
 - [ ] Pastikan pin peta (Jl. Wayabula No. 60) sudah benar.
 - [ ] Daftarkan `https://mitravisidigital.com/sitemap.xml` di Google Search Console.
