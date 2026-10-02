@@ -223,7 +223,8 @@ git pull --ff-only
   karena server membaca file setiap permintaan.
 - Perubahan `server.js` atau `ecosystem.config.cjs` perlu
   `pm2 reload ecosystem.config.cjs --update-env`.
-- Cache: HTML selalu divalidasi ulang. CSS/JS di-cache 5 menit, gambar 1 hari.
+- Cache: HTML, CSS, dan JS selalu divalidasi ulang ke server (murah, dijawab 304 bila
+  tidak berubah), jadi langsung terlihat. Gambar di-cache 1 hari.
   Kalau perubahan harus terlihat seketika, buka Cloudflare → Caching →
   **Purge Cache** (Custom: URL file yang diubah, atau Purge Everything).
   Saat mengganti foto, sebaiknya pakai **nama file baru** supaya tidak tertahan cache.
@@ -270,5 +271,5 @@ pemberitahuan bahwa kontak belum aktif. Checklist lain:
 | Opsi B tetap 502 | server masih di `127.0.0.1` | `HOST: '0.0.0.0'` + `pm2 reload ... --update-env`; cek `extra_hosts` |
 | Error **1000/1014 / DNS** | record lama bentrok | Hapus A/CNAME lama untuk `@`/`www`, biarkan CNAME tunnel |
 | `www` tidak dialihkan | `CANONICAL_HOST` tidak terbaca | Pastikan ada di `env` ecosystem lalu `pm2 reload ecosystem.config.cjs --update-env` |
-| Perubahan CSS tidak muncul | cache browser/Cloudflare | Tunggu 5 menit atau Purge Cache |
+| Gambar baru tidak muncul | cache browser/Cloudflare (1 hari) | Pakai nama file baru, atau Purge Cache |
 | App mati setelah reboot | `pm2 startup` belum dijalankan | Ulangi bagian 4: `pm2 startup` + `pm2 save` |

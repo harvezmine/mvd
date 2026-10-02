@@ -41,11 +41,11 @@ const SECURITY_HEADERS = {
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
 };
 
-// HTML selalu divalidasi ulang supaya perubahan langsung terlihat;
-// CSS/JS cache pendek; gambar cache sehari (nama file tidak di-hash).
+// HTML, CSS, dan JS selalu divalidasi ulang (ETag -> 304 bila tidak berubah),
+// jadi perubahan langsung terlihat; gambar cache sehari (nama file tidak di-hash).
 function cacheControl(ext) {
   if (ext === '.html') return 'no-cache';
-  if (ext === '.css' || ext === '.js') return 'public, max-age=300, must-revalidate';
+  if (ext === '.css' || ext === '.js') return 'no-cache';
   if (['.jpg', '.jpeg', '.png', '.webp', '.avif', '.svg', '.ico', '.woff2'].includes(ext)) {
     return 'public, max-age=86400';
   }

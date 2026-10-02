@@ -101,8 +101,7 @@
 <header class="site-header" id="top">
   <div class="wrap site-header__inner">
     <a class="brand" href="#top" aria-label="PT Mitra Visi Digital">
-      <img class="brand__logo brand__logo--light" src="assets/img/brand/mvd-logo-white.svg" alt="" width="89" height="30">
-      <img class="brand__logo brand__logo--dark" src="assets/img/brand/mvd-logo-navy.svg" alt="" width="89" height="30">
+      <span class="brand__logo" aria-hidden="true"></span>
       <span class="brand__text"><b>Mitra Visi Digital</b></span>
     </a>
 
@@ -152,26 +151,25 @@
   <!-- ==================================================================== -->
   <section class="section" id="tentang" aria-labelledby="about-title">
     <div class="wrap about">
-      <div class="about__text">
+      <div class="about__head">
         <h2 class="section-title" id="about-title" data-reveal data-i18n="about.title">Mitra teknologi yang ikut memikirkan bisnis Anda.</h2>
-        <p class="section-lede" data-reveal data-i18n="about.p1">PT Mitra Visi Digital adalah perusahaan teknologi di Bekasi. Bagi kami, teknologi yang baik itu sederhana: benar-benar dipakai, menyelesaikan masalah nyata, dan mudah dirawat dalam jangka panjang.</p>
-        <p class="about__p" data-reveal data-i18n="about.p2">Kami juga menjalankan produk digital sendiri, jadi kami tahu apa yang dibutuhkan sebuah sistem setelah diluncurkan. Pengalaman itu kami bawa ke setiap proyek klien.</p>
-        <ul class="checks" data-reveal>
-          <li data-i18n="about.c1">Satu tim, dari rancangan sampai server</li>
-          <li data-i18n="about.c2">Teruji di produk yang kami jalankan sendiri</li>
-          <li data-i18n="about.c3">Data Anda kami jaga, NDA siap ditandatangani</li>
-        </ul>
-      </div>
-      <div class="about__media" data-reveal>
-        <img class="about__img about__img--main" src="assets/img/photos/about-1.jpg" width="1100" height="800" loading="lazy" alt="Rapat tim di ruang kantor" data-i18n-alt="about.alt1">
-        <div class="about__row">
-          <img class="about__img about__img--small" src="assets/img/photos/about-2.jpg" width="800" height="800" loading="lazy" alt="Tim berdiskusi di depan laptop" data-i18n-alt="about.alt2">
-          <div class="about__fact">
-            <b>3</b>
-            <span data-i18n="about.badge">produk digital yang kami bangun dan jalankan sendiri</span>
-          </div>
+        <div class="about__text">
+          <p class="section-lede" data-reveal data-i18n="about.p1">PT Mitra Visi Digital adalah perusahaan teknologi di Bekasi. Bagi kami, teknologi yang baik itu sederhana: benar-benar dipakai, menyelesaikan masalah nyata, dan mudah dirawat dalam jangka panjang.</p>
+          <p class="about__p" data-reveal data-i18n="about.p2">Kami juga menjalankan produk digital sendiri, jadi kami tahu apa yang dibutuhkan sebuah sistem setelah diluncurkan. Pengalaman itu kami bawa ke setiap proyek klien.</p>
+          <p class="about__p" data-reveal data-i18n="about.p3">Setiap proyek dikerjakan satu tim, dari rancangan sampai server. Data klien kami jaga, dan bila perlu kami siap menandatangani NDA sebelum diskusi dimulai.</p>
         </div>
       </div>
+
+      <figure class="about__photo" data-reveal>
+        <img src="assets/img/photos/about-wide.jpg" width="2200" height="900" loading="lazy" alt="Rapat tim di ruang kantor" data-i18n-alt="about.alt1">
+      </figure>
+
+      <dl class="about__facts" data-reveal>
+        <div><dt data-i18n="prof.name">Nama perusahaan</dt><dd>PT Mitra Visi Digital</dd></div>
+        <div><dt data-i18n="prof.field">Bidang usaha</dt><dd data-i18n="prof.field.v">Website, aplikasi, dan sistem digital</dd></div>
+        <div><dt data-i18n="prof.office">Kantor</dt><dd data-i18n="prof.office.v">Kota Bekasi, Jawa Barat</dd></div>
+        <div><dt data-i18n="prof.products">Produk</dt><dd>Portalio, Sekretaris AI, Docloq</dd></div>
+      </dl>
     </div>
 
     <div class="wrap vm-wrap" id="visi-misi">
@@ -462,7 +460,7 @@
     <div class="site-footer__grid">
       <div class="site-footer__brand">
         <a class="brand brand--footer" href="#top" aria-label="PT Mitra Visi Digital">
-          <img class="brand__logo" src="assets/img/brand/mvd-logo-white.svg" alt="" width="89" height="30">
+          <span class="brand__logo" aria-hidden="true"></span>
           <span class="brand__text"><b>PT Mitra Visi Digital</b></span>
         </a>
         <p data-i18n="foot.desc">Perusahaan teknologi di Bekasi yang merancang, membangun, dan merawat website, aplikasi, dan sistem untuk bisnis.</p>
