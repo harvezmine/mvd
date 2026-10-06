@@ -12,8 +12,18 @@ const path = require('node:path');
 const ROOT = path.join(__dirname, 'public');
 const PORT = Number(process.env.PORT) || 3200;
 const HOST = process.env.HOST || '127.0.0.1';
-// Domain utama. Permintaan ke www.<domain> dialihkan ke sini (301).
+// Domain utama; yang dipakai di tag canonical public/index.html.
 const CANONICAL_HOST = (process.env.CANONICAL_HOST || '').toLowerCase();
+// Domain lain yang juga disajikan langsung (dipisah koma), mis. "mvd.ai.id".
+// Isinya identik dengan CANONICAL_HOST; tag canonical yang menyatukan
+// keduanya di mata mesin pencari.
+const ALIAS_HOSTS = (process.env.ALIAS_HOSTS || '')
+  .toLowerCase()
+  .split(',')
+  .map((h) => h.trim())
+  .filter(Boolean);
+// Semua apex yang dilayani. Permintaan ke www.<apex> dialihkan ke <apex> (301).
+const APEX_HOSTS = [CANONICAL_HOST].concat(ALIAS_HOSTS).filter(Boolean);
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -78,10 +88,10 @@ const server = http.createServer((req, res) => {
     return sendText(res, 405, 'Method not allowed', { Allow: 'GET, HEAD' });
   }
 
-  // www.mitravisidigital.com -> mitravisidigital.com
+  // www.<domain> -> <domain>, untuk tiap domain yang dilayani
   const host = String(req.headers.host || '').toLowerCase().split(':')[0];
-  if (CANONICAL_HOST && host === 'www.' + CANONICAL_HOST) {
-    res.writeHead(301, Object.assign({ Location: 'https://' + CANONICAL_HOST + req.url }, SECURITY_HEADERS));
+  if (host.startsWith('www.') && APEX_HOSTS.includes(host.slice(4))) {
+    res.writeHead(301, Object.assign({ Location: 'https://' + host.slice(4) + req.url }, SECURITY_HEADERS));
     return res.end();
   }
 
@@ -126,7 +136,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log('mitravisidigital.com: melayani ' + ROOT + ' di http://' + HOST + ':' + PORT);
+  console.log('MVD web: melayani ' + ROOT + ' di http://' + HOST + ':' + PORT
+    + ' untuk ' + (APEX_HOSTS.join(', ') || '(host apa pun)'));
 });
 
 // PM2 mengirim SIGINT saat restart/reload: tutup koneksi dengan rapi.

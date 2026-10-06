@@ -38,7 +38,9 @@ module.exports = {
         NODE_ENV: 'production',
         HOST: '127.0.0.1',
         PORT: 3200,
-        CANONICAL_HOST: 'mitravisidigital.com'
+        CANONICAL_HOST: 'mitravisidigital.com',
+        // Domain lain yang menyajikan landing yang sama (dipisah koma).
+        ALIAS_HOSTS: 'mvd.ai.id'
       }, readEnvFile(ENV_FILE))
     }
   ]
