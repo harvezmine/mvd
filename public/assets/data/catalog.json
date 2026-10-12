@@ -1,0 +1,211 @@
+{
+  "currency": "IDR",
+  "updated": "2026-10-12",
+  "note": "Satu-satunya sumber harga. Kartu harga di beranda, halaman checkout, dan server (yang membuat tagihan) membaca file ini. Setiap pilihan yang bisa dibeli punya 'sku' unik dan 'price' dalam Rupiah. Harga harus sama dengan harga resmi di situs produk masing-masing. Server membaca ulang file setiap pesanan, tanpa restart.",
+  "products": [
+    {
+      "id": "portalio",
+      "name": "Portalio",
+      "logo": "/assets/img/products/portalio.png",
+      "url": "https://portalio.id",
+      "tagline": "Website portofolio dari CV, dibuat langsung dari HP.",
+      "tagline_en": "A portfolio website made from your CV, right from your phone.",
+      "account_hint": "Paket diaktifkan pada akun Portalio dengan email ini. Belum punya akun? Daftar gratis dulu di portalio.id.",
+      "plans": [
+        {
+          "name": "Gratis",
+          "name_en": "Free",
+          "price_label": "Rp0",
+          "period": "selamanya",
+          "period_en": "forever",
+          "features": [
+            "Website portofolio dari CV",
+            "Alamat portalio.id/myweb/namamu",
+            "Bisa dibuat dan diubah dari HP"
+          ],
+          "features_en": [
+            "Portfolio website from your CV",
+            "Address at portalio.id/myweb/yourname",
+            "Build and edit it from your phone"
+          ],
+          "cta": "Daftar gratis",
+          "cta_en": "Sign up free",
+          "cta_href": "https://portalio.id"
+        },
+        {
+          "name": "Standard",
+          "name_en": "Standard",
+          "features": [
+            "Alamat namamu.portalio.id",
+            "Tanpa watermark Portalio",
+            "Bantuan AI untuk mengatur tampilan web",
+            "Integrasi dengan GitHub dan LinkedIn",
+            "Lihat siapa saja yang mampir"
+          ],
+          "features_en": [
+            "Address at yourname.portalio.id",
+            "No Portalio watermark",
+            "AI help to customise your site's look",
+            "GitHub and LinkedIn integration",
+            "See who visits your site"
+          ],
+          "options": [
+            {
+              "sku": "portalio-standard-bulanan",
+              "label": "Bulanan",
+              "label_en": "Monthly",
+              "price": 10000,
+              "period": "1 bulan",
+              "period_en": "1 month",
+              "unit": "/bulan",
+              "unit_en": "/month"
+            },
+            {
+              "sku": "portalio-standard-tahunan",
+              "label": "Tahunan",
+              "label_en": "Yearly",
+              "price": 100000,
+              "period": "1 tahun",
+              "period_en": "1 year",
+              "unit": "/tahun",
+              "unit_en": "/year",
+              "note": "hemat 2 bulan",
+              "note_en": "2 months free"
+            }
+          ]
+        },
+        {
+          "name": "Professional",
+          "name_en": "Professional",
+          "features": [
+            "Semua yang ada di Standard",
+            "Domain sendiri namamu.com (gratis untuk paket tahunan)",
+            "Form custom untuk monetisasi produk",
+            "Statistik pengunjung yang lebih lengkap",
+            "Kustomisasi dan kuota portofolio tanpa batas"
+          ],
+          "features_en": [
+            "Everything in Standard",
+            "Your own domain yourname.com (free on the yearly plan)",
+            "Custom forms to sell your products",
+            "More detailed visitor statistics",
+            "Unlimited customisation and portfolio quota"
+          ],
+          "options": [
+            {
+              "sku": "portalio-professional-bulanan",
+              "label": "Bulanan",
+              "label_en": "Monthly",
+              "price": 50000,
+              "period": "1 bulan",
+              "period_en": "1 month",
+              "unit": "/bulan",
+              "unit_en": "/month"
+            },
+            {
+              "sku": "portalio-professional-tahunan",
+              "label": "Tahunan",
+              "label_en": "Yearly",
+              "price": 500000,
+              "period": "1 tahun",
+              "period_en": "1 year",
+              "unit": "/tahun",
+              "unit_en": "/year",
+              "note": "hemat 2 bulan",
+              "note_en": "2 months free"
+            }
+          ]
+        }
+      ],
+      "tint": "#ECEEFB"
+    },
+    {
+      "id": "sekretaris-ai",
+      "name": "Sekretaris AI",
+      "logo": "/assets/img/products/sekretaris-ai.png",
+      "url": "https://secretary.my.id",
+      "tagline": "Sekretaris pribadi 24 jam di WhatsApp.",
+      "tagline_en": "A 24-hour personal secretary on WhatsApp.",
+      "account_hint": "Paket diaktifkan untuk nomor WhatsApp ini, yaitu nomor yang memakai Sekretaris AI.",
+      "plans": [
+        {
+          "name": "Coba gratis",
+          "name_en": "Free trial",
+          "price_label": "Rp0",
+          "period": "selama 7 hari",
+          "period_en": "for 7 days",
+          "features": [
+            "Semua fitur Sekretaris AI",
+            "Langsung aktif, tanpa kode",
+            "Tanpa kartu kredit, berhenti sendiri"
+          ],
+          "features_en": [
+            "Every Sekretaris AI feature",
+            "Active right away, no code needed",
+            "No credit card, stops by itself"
+          ],
+          "cta": "Coba gratis",
+          "cta_en": "Start free trial",
+          "cta_href": "https://secretary.my.id"
+        },
+        {
+          "name": "Profesional",
+          "name_en": "Professional",
+          "features": [
+            "Siaga 24 jam, setiap hari",
+            "Google, Notion, dan rapat online",
+            "Grup WhatsApp, cari jasa, dan tiket",
+            "Tanpa perpanjangan otomatis"
+          ],
+          "features_en": [
+            "On call 24 hours, every day",
+            "Google, Notion and online meetings",
+            "WhatsApp groups, finding services, and tickets",
+            "No automatic renewal"
+          ],
+          "options": [
+            {
+              "sku": "sekretaris-profesional-bulanan",
+              "label": "Bulanan",
+              "label_en": "Monthly",
+              "price": 500000,
+              "period": "1 bulan",
+              "period_en": "1 month",
+              "unit": "/bulan",
+              "unit_en": "/month"
+            }
+          ]
+        },
+        {
+          "name": "Eksekutif",
+          "name_en": "Executive",
+          "features": [
+            "Semua yang ada di Profesional",
+            "Percakapan tanpa batas",
+            "Dipasang dan diatur oleh tim kami",
+            "Dihubungi tim dalam 1×24 jam"
+          ],
+          "features_en": [
+            "Everything in Professional",
+            "Unlimited conversations",
+            "Set up and configured by our team",
+            "Contacted by our team within 24 hours"
+          ],
+          "options": [
+            {
+              "sku": "sekretaris-eksekutif-bulanan",
+              "label": "Bulanan",
+              "label_en": "Monthly",
+              "price": 1000000,
+              "period": "1 bulan",
+              "period_en": "1 month",
+              "unit": "/bulan",
+              "unit_en": "/month"
+            }
+          ]
+        }
+      ],
+      "tint": "#E6F2EA"
+    }
+  ]
+}

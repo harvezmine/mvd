@@ -8,14 +8,12 @@
 
   /* ====================================================================== */
   /* 0. DATA PERUSAHAAN                                                      */
-  /* Kontak resmi menyusul. Selama kosong, email/WhatsApp tampil "Segera     */
-  /* tersedia", formulir memberi tahu bahwa kontak belum aktif, dan baris    */
-  /* NIB di footer disembunyikan.                                            */
+  /* Kontak yang kosong disembunyikan; baris NIB di footer juga.             */
   /* ====================================================================== */
   var CONFIG = {
-    whatsapp: '',   // format internasional tanpa +, contoh: '6281234567890'
-    email:    '',   // contoh: 'halo@mitravisidigital.com'
-    nib:      ''    // Nomor Induk Berusaha
+    whatsapp: '6289636458562', // format internasional tanpa +
+    email:    'team@mvd.ai.id',
+    nib:      '0409260102484'   // Nomor Induk Berusaha
   };
 
   var $  = function (s, c) { return (c || document).querySelector(s); };
@@ -155,6 +153,24 @@
       'foot.products': 'Produk',
       'foot.services': 'Layanan',
       'foot.contact': 'Kontak',
+      'nav.price': 'Harga',
+      'price.title': 'Harga Produk',
+      'price.lede': 'Pilih paket langganan Portalio atau Sekretaris AI, lalu bayar secara online. Langganan tidak diperpanjang otomatis.',
+      'price.order': 'Pesan',
+      'price.custom.t': 'Butuh Docloq, atau jasa pembuatan website dan aplikasi?',
+      'price.custom.d': 'Docloq dan proyek pengembangan dihitung sesuai kebutuhan. Ceritakan kebutuhan Anda, kami kirimkan penawaran tertulis.',
+      'price.custom.cta': 'Minta Penawaran',
+      'price.note': 'Harga dalam Rupiah. Paket aktif sesuai masa langganan dan tidak diperpanjang otomatis. Baca <a href="/syarat-ketentuan">Syarat &amp; Ketentuan</a> dan <a href="/kebijakan-pengembalian">Kebijakan Pengembalian Dana</a> sebelum membeli.',
+      'p1.price': 'Paket gratis tersedia. Paket berbayar mulai Rp10.000/bulan.',
+      'p2.price': 'Coba gratis 7 hari, lalu mulai Rp500.000/bulan.',
+      'p3.price': 'Harga menyesuaikan kebutuhan organisasi, melalui penawaran.',
+      'con.phone': 'Telepon / WhatsApp',
+      'foot.legal': 'Informasi legal',
+      'foot.terms': 'Syarat & Ketentuan',
+      'foot.privacy': 'Kebijakan Privasi',
+      'foot.refund': 'Kebijakan Pengembalian Dana',
+      'price.orderNow': 'Pesan Sekarang',
+      'price.or': 'atau',
       'foot.rights':   'Hak cipta dilindungi.'
     },
 
@@ -284,6 +300,24 @@
       'foot.products': 'Products',
       'foot.services': 'Services',
       'foot.contact': 'Contact',
+      'nav.price': 'Pricing',
+      'price.title': 'Product Pricing',
+      'price.lede': 'Choose a Portalio or Sekretaris AI subscription, then pay online. Subscriptions never renew automatically.',
+      'price.order': 'Order',
+      'price.custom.t': 'Need Docloq, or a website or app built for you?',
+      'price.custom.d': 'Docloq and development projects are priced to your needs. Tell us what you need and we’ll send a written quotation.',
+      'price.custom.cta': 'Request a Quote',
+      'price.note': 'Prices are in Indonesian Rupiah. Plans stay active for the subscription period and never renew automatically. Please read our <a href="/syarat-ketentuan">Terms &amp; Conditions</a> and <a href="/kebijakan-pengembalian">Refund Policy</a> before buying.',
+      'p1.price': 'Free plan available. Paid plans from Rp10,000/month.',
+      'p2.price': '7-day free trial, then from Rp500,000/month.',
+      'p3.price': 'Priced to your organisation’s needs, by quotation.',
+      'con.phone': 'Phone / WhatsApp',
+      'foot.legal': 'Legal information',
+      'foot.terms': 'Terms & Conditions',
+      'foot.privacy': 'Privacy Policy',
+      'foot.refund': 'Refund Policy',
+      'price.orderNow': 'Order Now',
+      'price.or': 'or',
       'foot.rights':   'All rights reserved.'
     }
   };
@@ -300,8 +334,6 @@
   }
 
   function renderContacts() {
-    var d = DICT[lang];
-
     $$('[data-contact]').forEach(function (el) {
       var kind = el.getAttribute('data-contact');
       var valueEl = $('[data-contact-value]', el);
@@ -315,14 +347,13 @@
         text = CONFIG.email;
       }
 
+      var row = el.closest('li');
       if (href) {
         el.setAttribute('href', href);
-        el.classList.remove('is-pending');
         valueEl.textContent = text;
-      } else {
-        el.removeAttribute('href');
-        el.classList.add('is-pending');
-        valueEl.textContent = d['con.soon'];
+        if (row) row.hidden = false;
+      } else if (row) {
+        row.hidden = true;
       }
     });
 
@@ -331,6 +362,75 @@
       el.hidden = !v;
       if (v) $('[data-config-value]', el).textContent = v;
     });
+  }
+
+  /* ====================================================================== */
+  /* 2b. HARGA                                                               */
+  /* Kartu harga dirender dari assets/data/catalog.json, sumber yang sama    */
+  /* dengan checkout dan server. HTML statis hanya cadangan tanpa JS.        */
+  /* ====================================================================== */
+  var catalog = null;
+  var plansEl = $('#plans');
+
+  function escHtml(v) {
+    return String(v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function formatRp(n) {
+    return 'Rp' + Number(n).toLocaleString(lang === 'en' ? 'en-US' : 'id-ID');
+  }
+  function pick(pkg, field) {
+    return (lang === 'en' && pkg[field + '_en']) || pkg[field];
+  }
+
+  var ARROW_OUT = '<svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+
+  function planCard(plan) {
+    var d = DICT[lang];
+    var opts = plan.options || [];
+    var feats = pick(plan, 'features').map(function (f) { return '<li>' + escHtml(f) + '</li>'; }).join('');
+    var price, alt = '', actions;
+    if (!opts.length) {
+      price = '<p class="plan__price"><b>' + escHtml(plan.price_label) + '</b><span>' + escHtml(pick(plan, 'period')) + '</span></p>';
+      actions = '<a class="btn btn--outline btn--block" href="' + escHtml(plan.cta_href) + '" target="_blank" rel="noopener"><span>' +
+        escHtml(pick(plan, 'cta')) + '</span>' + ARROW_OUT + '</a>';
+    } else {
+      price = '<p class="plan__price"><b>' + formatRp(opts[0].price) + '</b><span>' + escHtml(pick(opts[0], 'unit')) + '</span></p>';
+      alt = opts.slice(1).map(function (o) {
+        var note = pick(o, 'note');
+        return '<p class="plan__alt">' + escHtml(d['price.or']) + ' ' + formatRp(o.price) + escHtml(pick(o, 'unit')) + (note ? ' (' + escHtml(note) + ')' : '') + '</p>';
+      }).join('');
+      actions = opts.length === 1
+        ? '<a class="btn btn--primary btn--block" href="/checkout?paket=' + encodeURIComponent(opts[0].sku) + '">' + escHtml(d['price.orderNow']) + '</a>'
+        : opts.map(function (o, i) {
+            return '<a class="btn ' + (i === opts.length - 1 ? 'btn--primary' : 'btn--outline') + '" href="/checkout?paket=' + encodeURIComponent(o.sku) + '">' +
+              escHtml(d['price.order'] + ' ' + pick(o, 'label')) + '</a>';
+          }).join('');
+    }
+    return '<article class="plan"><h4 class="plan__name">' + escHtml(pick(plan, 'name')) + '</h4>' + price + alt +
+      '<ul class="plan__list">' + feats + '</ul><div class="plan__actions">' + actions + '</div></article>';
+  }
+
+  function renderPlans() {
+    if (!plansEl || !catalog) return;
+    plansEl.innerHTML = catalog.products.map(function (pr) {
+      return '<div class="price-group">' +
+        '<div class="price-group__head">' +
+          '<span class="show__logo" style="--tint:' + escHtml(pr.tint || '#eff4fd') + '"><img src="' + escHtml(pr.logo) + '" alt="" width="30" height="30"></span>' +
+          '<div><h3>' + escHtml(pr.name) + '</h3><p>' + escHtml(pick(pr, 'tagline')) + '</p></div>' +
+          '<a class="link" href="' + escHtml(pr.url) + '" target="_blank" rel="noopener"><span>' + escHtml(pr.url.replace(/^https?:\/\//, '')) + '</span>' + ARROW_OUT + '</a>' +
+        '</div>' +
+        '<div class="plans">' + pr.plans.map(planCard).join('') + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  if (plansEl && window.fetch) {
+    fetch('/assets/data/catalog.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) { if (data && data.products) { catalog = data; renderPlans(); } })
+      .catch(function () {});
   }
 
   /* ====================================================================== */
@@ -447,6 +547,7 @@
 
     syncBurgerLabel();
     renderContacts();
+    renderPlans();
     try { localStorage.setItem('mvd-lang', lang); } catch (e) {}
   }
 
@@ -497,6 +598,8 @@
     });
   }
 
+  // Halaman selain beranda tidak punya hero gelap: header selalu putih.
+  var forceSolid = header && header.hasAttribute('data-solid');
   var sentinel = document.createElement('div');
   sentinel.setAttribute('aria-hidden', 'true');
   sentinel.style.cssText = 'position:absolute;top:0;left:0;height:24px;width:1px;pointer-events:none;';
@@ -504,7 +607,7 @@
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
-      header.classList.toggle('is-solid', !entries[0].isIntersecting);
+      header.classList.toggle('is-solid', forceSolid || !entries[0].isIntersecting);
     }).observe(sentinel);
 
     // Penanda menu aktif sesuai seksi yang sedang dibaca
@@ -558,5 +661,11 @@
   /* ====================================================================== */
   var stored = null;
   try { stored = localStorage.getItem('mvd-lang'); } catch (e) {}
-  setLang(stored || 'id');
+  if ($('[data-set-lang]')) {
+    setLang(stored || 'id');
+  } else {
+    // Halaman berbahasa Indonesia saja (checkout, kebijakan)
+    syncBurgerLabel();
+    renderContacts();
+  }
 })();

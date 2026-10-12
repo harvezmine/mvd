@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id-ID">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Status Pesanan | PT Mitra Visi Digital</title>
+<meta name="description" content="Status pesanan dan pembayaran di PT Mitra Visi Digital.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0a1d42">
+<link rel="canonical" href="https://mitravisidigital.com/pesanan">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/brand/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+
+<body class="subpage">
+
+<a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+<header class="site-header is-solid" id="top" data-solid>
+  <div class="wrap site-header__inner">
+    <a class="brand" href="/" aria-label="PT Mitra Visi Digital, kembali ke beranda">
+      <span class="brand__logo" aria-hidden="true"></span>
+      <span class="brand__text"><b>Mitra Visi Digital</b></span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navigasi utama">
+      <a href="/#tentang">Tentang Kami</a>
+      <a href="/#layanan">Layanan</a>
+      <a href="/#produk">Produk</a>
+      <a href="/#harga">Harga</a>
+      <a href="/#kontak">Kontak</a>
+      <a class="btn btn--primary nav__cta" href="/#kontak">Hubungi Kami</a>
+    </nav>
+
+    <div class="site-header__tools">
+      <a class="btn btn--header btn--sm site-header__cta" href="/#kontak">Hubungi Kami</a>
+      <button type="button" class="burger" aria-controls="nav" aria-expanded="false" aria-label="Buka menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="section order-section">
+    <div class="wrap">
+      <div class="order" id="order" data-state="loading" aria-live="polite">
+        <span class="order__icon" aria-hidden="true"></span>
+        <h1 class="order__title" id="order-title">Memuat status pesanan...</h1>
+        <p class="order__text" id="order-text"></p>
+        <dl class="order__rows" id="order-rows" hidden>
+          <div><dt>Nomor pesanan</dt><dd data-o="id"></dd></div>
+          <div><dt>Paket</dt><dd data-o="package"></dd></div>
+          <div><dt>Total</dt><dd data-o="amount"></dd></div>
+          <div><dt>Tanggal pesanan</dt><dd data-o="date"></dd></div>
+          <div><dt>Status</dt><dd data-o="status"></dd></div>
+        </dl>
+        <div class="order__actions" id="order-actions"></div>
+        <p class="order__help">Butuh bantuan? Hubungi kami di <a href="https://wa.me/6289636458562" target="_blank" rel="noopener" id="order-wa">WhatsApp +62 896-3645-8562</a> dan sebutkan nomor pesanan Anda.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <img class="site-footer__bg" src="/assets/img/photos/hero.jpg" width="1590" height="1100" loading="lazy" alt="">
+  <div class="wrap">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a class="brand brand--footer" href="/" aria-label="PT Mitra Visi Digital">
+          <span class="brand__logo" aria-hidden="true"></span>
+          <span class="brand__text"><b>PT Mitra Visi Digital</b></span>
+        </a>
+        <p>Perusahaan teknologi di Bekasi yang merancang, membangun, dan merawat website, aplikasi, dan sistem untuk bisnis.</p>
+      </div>
+
+      <nav class="site-footer__col" aria-labelledby="ft-company">
+        <h2 id="ft-company">Perusahaan</h2>
+        <a href="/#tentang">Tentang Kami</a>
+        <a href="/#visi-misi">Visi &amp; Misi</a>
+        <a href="/#produk">Produk</a>
+        <a href="/#harga">Harga</a>
+        <a href="/#kontak">Kontak</a>
+      </nav>
+
+      <nav class="site-footer__col" aria-labelledby="ft-services">
+        <h2 id="ft-services">Layanan</h2>
+        <a href="/#layanan">Company Profile</a>
+        <a href="/#layanan">Landing Page</a>
+        <a href="/#layanan">Website Perusahaan</a>
+        <a href="/#layanan">Aplikasi Web &amp; SaaS</a>
+        <a href="/#layanan">Integrasi Sistem &amp; AI</a>
+        <a href="/#layanan">Konsultasi Digital</a>
+      </nav>
+
+      <nav class="site-footer__col" aria-labelledby="ft-products">
+        <h2 id="ft-products">Produk</h2>
+        <a href="https://portalio.id" target="_blank" rel="noopener">Portalio</a>
+        <a href="https://secretary.my.id" target="_blank" rel="noopener">Sekretaris AI</a>
+        <a href="/#docloq">Docloq</a>
+      </nav>
+
+      <div class="site-footer__col site-footer__contact">
+        <h2>Kontak</h2>
+        <ul>
+          <li>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
+            <address>Jl. Wayabula No. 60<br>Kota Bekasi, Jawa Barat 17411</address>
+          </li>
+          <li>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l1.2-3.6A7.5 7.5 0 1 1 8.6 18.6z"/><path d="M9.2 9.6c.3 1.9 1.4 3.4 3.4 4.4l1-1 1.9.8-.3 1.5c-3.6.2-6.6-2.8-6.6-6.4l1.5-.3.8 1.9z"/></svg>
+            <a data-contact="whatsapp" href="https://wa.me/6289636458562" target="_blank" rel="noopener"><span data-contact-value>+62 896-3645-8562</span></a>
+          </li>
+          <li>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+            <a data-contact="email" href="mailto:team@mvd.ai.id"><span data-contact-value>team@mvd.ai.id</span></a>
+          </li>
+          <li>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span>Senin–Jumat, 09.00–17.00 WIB</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>&copy; <span data-year>2026</span> PT Mitra Visi Digital. Hak cipta dilindungi.</p>
+      <p data-config="nib">NIB <span data-config-value>0409260102484</span></p>
+      <nav class="site-footer__legal" aria-label="Informasi legal">
+        <a href="/syarat-ketentuan">Syarat &amp; Ketentuan</a>
+        <a href="/kebijakan-privasi">Kebijakan Privasi</a>
+        <a href="/kebijakan-pengembalian">Kebijakan Pengembalian Dana</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/shop.js" defer></script>
+</body>
+</html>

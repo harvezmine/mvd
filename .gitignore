@@ -3,3 +3,5 @@ logs/
 *.log
 .DS_Store
 .env
+# Pesanan pelanggan (berisi data pribadi), jangan masuk git
+/data/
