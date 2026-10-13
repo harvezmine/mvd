@@ -5,11 +5,15 @@
 # Pakai (di server, dari mana saja, setelah push ke GitHub):
 #   ./deploy.sh           # deploy kalau ada commit baru
 #   ./deploy.sh --force   # reload ulang walau tidak ada commit baru
+#   ./deploy.sh --merge   # ikut gabungkan kalau local & origin sudah divergen
 #
 # Alurnya:
 #   1. git fetch. Kalau origin tidak punya commit baru DAN commit sekarang
 #      sudah pernah sukses di-deploy, keluar.
-#   2. git merge --ff-only.
+#   2. git merge --ff-only. Kalau local dan origin sudah divergen (keduanya
+#      punya commit yang tidak dimiliki yang lain), fast-forward tidak mungkin:
+#      tanpa --merge deploy berhenti dengan penjelasan, dengan --merge skrip
+#      melakukan merge biasa dan membatalkannya kalau ada konflik.
 #   3. pm2 startOrReload ecosystem.config.cjs --update-env. Situsnya statis
 #      (tanpa npm install / build); perubahan public/ sebenarnya sudah aktif
 #      begitu di-merge, reload diperlukan untuk server.js / ecosystem.
@@ -58,15 +62,31 @@ git_remote() {
   fi
 }
 
+# File yang dibuat langsung di server lalu di-commit dari tempat lain (misalnya
+# deploy.sh ini) membuat merge menolak dengan "untracked working tree files
+# would be overwritten". Kalau isinya identik dengan versi di remote, aman
+# dihapus supaya merge bisa jalan.
+drop_identical_untracked() {
+  local target_rev="$1" branch="$2" f
+  while IFS= read -r f; do
+    if git cat-file -e "$target_rev:$f" 2>/dev/null && git show "$target_rev:$f" | cmp -s - "$f"; then
+      log "  $f belum di-track tapi identik dengan versi di $branch — dilepas supaya merge bisa jalan"
+      rm -f -- "$f"
+    fi
+  done < <(git ls-files --others --exclude-standard)
+}
+
 # Dibungkus fungsi supaya bash membaca seluruh skrip sebelum menjalankannya:
 # `git merge` di bawah bisa menimpa file ini sendiri saat sedang berjalan.
 main() {
-  local force=false
-  case "${1:-}" in
-    "") ;;
-    --force) force=true ;;
-    *) echo "Pakai: $0 [--force]" >&2; exit 2 ;;
-  esac
+  local force=false merge=false arg
+  for arg in "$@"; do
+    case "$arg" in
+      --force) force=true ;;
+      --merge) merge=true ;;
+      *) echo "Pakai: $0 [--force] [--merge]" >&2; exit 2 ;;
+    esac
+  done
 
   cd "$REPO_DIR"
   mkdir -p "$APP_DIR/logs"
@@ -82,6 +102,14 @@ main() {
   done
   [[ -f "$ENV_FILE" ]] || fail "$ENV_FILE tidak ada — buat dulu (HOST, PORT, CANONICAL_HOST)."
 
+  # Merge butuh identitas committer. Dicek di sini supaya gagalnya jelas, bukan
+  # muncul sebagai "Committer identity unknown" di tengah merge.
+  if ! git config user.name >/dev/null || ! git config user.email >/dev/null; then
+    fail "identitas git belum di-set, merge akan gagal. Jalankan:
+  git -C $REPO_DIR config user.name \"<nama>\"
+  git -C $REPO_DIR config user.email \"<email>\""
+  fi
+
   GIT_TOKEN=""
   if [[ -f "$APP_DIR/.deploy.env" ]]; then
     GIT_TOKEN="$(grep -E '^GIT_TOKEN=' "$APP_DIR/.deploy.env" | head -1 | cut -d= -f2-)"
@@ -90,7 +118,8 @@ main() {
   local branch
   branch="$(git symbolic-ref --short HEAD)" || fail "HEAD detached — tidak tahu branch mana yang harus di-pull"
 
-  log "=== Deploy mulai (branch: $branch$([[ "$force" == true ]] && echo ', --force')) ==="
+  log "=== Deploy mulai (branch: $branch\
+$([[ "$force" == true ]] && echo ', --force')$([[ "$merge" == true ]] && echo ', --merge')) ==="
 
   if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
     fail "working tree tidak bersih, deploy dibatalkan supaya git pull tidak konflik:
@@ -110,22 +139,47 @@ $(git status --porcelain --untracked-files=no)"
     if [[ "$merge_base" == "$remote_rev" ]]; then
       log "Local ($local_rev) lebih baru dari origin/$branch ($remote_rev) — tidak ada yang di-pull."
     elif [[ "$merge_base" != "$local_rev" ]]; then
-      fail "local HEAD ($local_rev) menyimpang dari origin/$branch ($remote_rev) — tidak bisa fast-forward, perlu penanganan manual."
+      # Divergen: local dan origin masing-masing punya commit yang tidak ada di
+      # sisi lain, jadi fast-forward mustahil.
+      local only_local only_remote
+      only_local="$(git rev-list --count "origin/$branch..HEAD")"
+      only_remote="$(git rev-list --count "HEAD..origin/$branch")"
+
+      if [[ "$merge" != true ]]; then
+        fail "local HEAD ($local_rev) menyimpang dari origin/$branch ($remote_rev) — tidak bisa fast-forward.
+  $only_local commit hanya ada di local:
+$(git log --oneline "origin/$branch..HEAD" | sed 's/^/    /')
+  $only_remote commit hanya ada di origin:
+$(git log --oneline "HEAD..origin/$branch" | sed 's/^/    /')
+Gabungkan dengan: ./deploy.sh --merge   (dibatalkan otomatis kalau ada konflik)
+Atau selesaikan manual lalu: ./deploy.sh --force"
+      fi
+
+      log "Divergen ($only_local commit local, $only_remote commit origin) — merge $remote_rev ke $local_rev ..."
+      log "File berbeda:
+$(git diff --name-only HEAD "origin/$branch")"
+
+      drop_identical_untracked "$remote_rev" "$branch"
+
+      # pipefail aktif, jadi status yang diuji adalah status git merge.
+      if ! git merge --no-edit "origin/$branch" 2>&1 | tee -a "$LOG_FILE"; then
+        local conflicts
+        conflicts="$(git diff --name-only --diff-filter=U || true)"
+        git merge --abort 2>/dev/null || true
+        fail "merge konflik — deploy dibatalkan, repo dikembalikan ke $local_rev.
+Konflik di:
+$(printf '%s\n' "${conflicts:-(tidak terdeteksi)}" | sed 's/^/  /')
+Selesaikan manual:
+  git merge origin/$branch   # perbaiki konflik, lalu git add + git commit
+  ./deploy.sh --force"
+      fi
+      log "Merge selesai: $(git rev-parse HEAD)"
     else
       log "Update ditemukan: $local_rev -> $remote_rev"
       log "File berubah:
 $(git diff --name-only "$local_rev" "$remote_rev")"
 
-      # File yang dibuat langsung di server lalu di-commit dari tempat lain
-      # (misalnya deploy.sh ini) membuat merge menolak "untracked working tree
-      # files would be overwritten". Kalau isinya identik, aman dihapus.
-      local f
-      while IFS= read -r f; do
-        if git cat-file -e "$remote_rev:$f" 2>/dev/null && git show "$remote_rev:$f" | cmp -s - "$f"; then
-          log "  $f belum di-track tapi identik dengan versi di $branch — dilepas supaya merge bisa jalan"
-          rm -f -- "$f"
-        fi
-      done < <(git ls-files --others --exclude-standard)
+      drop_identical_untracked "$remote_rev" "$branch"
 
       git merge --ff-only "origin/$branch" 2>&1 | tee -a "$LOG_FILE" || fail "git merge --ff-only gagal"
     fi
