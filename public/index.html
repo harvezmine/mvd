@@ -39,8 +39,7 @@
 <link rel="stylesheet" href="assets/css/site.css">
 <script>document.documentElement.classList.add('js');</script>
 
-<!-- Email, telepon, dan NIB belum dimasukkan: kontak resmi menyusul.
-     Setelah ada, tambahkan "email", "telephone", dan "identifier" (NIB) ke Organization. -->
+<!-- Harga paket harus sama dengan catalog.json. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -50,14 +49,25 @@
       "@id": "https://mitravisidigital.com/#org",
       "name": "PT Mitra Visi Digital",
       "legalName": "PT Mitra Visi Digital",
+      "identifier": { "@type": "PropertyValue", "propertyID": "NIB", "value": "0409260102484" },
       "url": "https://mitravisidigital.com/",
       "logo": "https://mitravisidigital.com/assets/img/brand/mvd-logo.png",
       "description": "Perusahaan teknologi di Bekasi yang merancang, membangun, dan merawat website, aplikasi, dan sistem untuk bisnis.",
+      "telephone": "+62-896-3645-8562",
+      "email": "team@mvd.ai.id",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+62-896-3645-8562",
+        "email": "team@mvd.ai.id",
+        "contactType": "customer service",
+        "availableLanguage": ["Indonesian", "English"]
+      },
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Jl. Wayabula No. 60",
         "addressLocality": "Kota Bekasi",
         "addressRegion": "Jawa Barat",
+        "postalCode": "17411",
         "addressCountry": "ID"
       },
       "brand": [
@@ -67,14 +77,14 @@
       ],
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
-        "name": "Layanan",
+        "name": "Harga Produk",
         "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pembuatan company profile" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pembuatan landing page" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pembuatan website perusahaan" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Pengembangan aplikasi web dan SaaS" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Integrasi sistem dan AI" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Konsultasi digital" } }
+          { "@type": "Offer", "price": "10000", "priceCurrency": "IDR", "url": "https://mitravisidigital.com/checkout?paket=portalio-standard-bulanan", "itemOffered": { "@type": "Product", "name": "Portalio Standard (Bulanan)", "brand": "Portalio" } },
+          { "@type": "Offer", "price": "100000", "priceCurrency": "IDR", "url": "https://mitravisidigital.com/checkout?paket=portalio-standard-tahunan", "itemOffered": { "@type": "Product", "name": "Portalio Standard (Tahunan)", "brand": "Portalio" } },
+          { "@type": "Offer", "price": "50000", "priceCurrency": "IDR", "url": "https://mitravisidigital.com/checkout?paket=portalio-professional-bulanan", "itemOffered": { "@type": "Product", "name": "Portalio Professional (Bulanan)", "brand": "Portalio" } },
+          { "@type": "Offer", "price": "500000", "priceCurrency": "IDR", "url": "https://mitravisidigital.com/checkout?paket=portalio-professional-tahunan", "itemOffered": { "@type": "Product", "name": "Portalio Professional (Tahunan)", "brand": "Portalio" } },
+          { "@type": "Offer", "price": "500000", "priceCurrency": "IDR", "url": "https://mitravisidigital.com/checkout?paket=sekretaris-profesional-bulanan", "itemOffered": { "@type": "Product", "name": "Sekretaris AI Profesional (Bulanan)", "brand": "Sekretaris AI" } },
+          { "@type": "Offer", "price": "1000000", "priceCurrency": "IDR", "url": "https://mitravisidigital.com/checkout?paket=sekretaris-eksekutif-bulanan", "itemOffered": { "@type": "Product", "name": "Sekretaris AI Eksekutif (Bulanan)", "brand": "Sekretaris AI" } }
         ]
       }
     },
@@ -109,6 +119,7 @@
       <a href="#tentang" data-i18n="nav.about">Tentang Kami</a>
       <a href="#layanan" data-i18n="nav.services">Layanan</a>
       <a href="#produk" data-i18n="nav.products">Produk</a>
+      <a href="#harga" data-i18n="nav.price">Harga</a>
       <a href="#kontak" data-i18n="nav.contact">Kontak</a>
       <a class="btn btn--primary nav__cta" href="#kontak" data-i18n="nav.cta">Hubungi Kami</a>
     </nav>
@@ -290,6 +301,7 @@
               <li data-i18n="p1.f2">Lowongan kerja dari 10+ sumber</li>
               <li data-i18n="p1.f3">Bayar dengan QRIS, ada paket gratis</li>
             </ul>
+            <p class="show__price" data-i18n="p1.price">Paket gratis tersedia. Paket berbayar mulai Rp10.000/bulan.</p>
             <a class="btn btn--outline" href="https://portalio.id" target="_blank" rel="noopener"><span data-i18n="p1.link">Kunjungi portalio.id</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
           </div>
         </article>
@@ -313,6 +325,7 @@
               <li data-i18n="p2.f2">Ringkasan email dan grup WhatsApp kantor</li>
               <li data-i18n="p2.f3">Semua tindakan menunggu persetujuan Anda</li>
             </ul>
+            <p class="show__price" data-i18n="p2.price">Coba gratis 7 hari, lalu mulai Rp500.000/bulan.</p>
             <a class="btn btn--outline" href="https://secretary.my.id" target="_blank" rel="noopener"><span data-i18n="p2.link">Kunjungi secretary.my.id</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
           </div>
         </article>
@@ -335,10 +348,52 @@
               <li data-i18n="p3.f2">Jejak audit yang terlindungi dari manipulasi</li>
               <li data-i18n="p3.f3">Enkripsi AES-256 dan autentikasi dua faktor</li>
             </ul>
+            <p class="show__price" data-i18n="p3.price">Harga menyesuaikan kebutuhan organisasi, melalui penawaran.</p>
             <a class="btn btn--primary" href="#kontak" data-topic="docloq"><span data-i18n="p3.link">Minta Demo</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           </div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================== -->
+  <!-- HARGA PRODUK: dirender ulang dari assets/data/catalog.json oleh site.js -->
+  <!-- ==================================================================== -->
+  <section class="section section--tint" id="harga" aria-labelledby="price-title">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 class="section-title" id="price-title" data-reveal data-i18n="price.title">Harga Produk</h2>
+        <p class="section-lede" data-reveal data-i18n="price.lede">Pilih paket langganan Portalio atau Sekretaris AI, lalu bayar secara online. Langganan tidak diperpanjang otomatis.</p>
+      </header>
+
+      <div class="price-groups" id="plans">
+        <div class="price-group" data-reveal>
+          <div class="price-group__head">
+            <span class="show__logo" style="--tint:#ECEEFB"><img src="/assets/img/products/portalio.png" alt="" width="30" height="30"></span>
+            <div><h3>Portalio</h3><p>Website portofolio dari CV, dibuat langsung dari HP.</p></div>
+            <a class="link" href="https://portalio.id" target="_blank" rel="noopener"><span>portalio.id</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="plans"><article class="plan"><h4 class="plan__name">Gratis</h4><p class="plan__price"><b>Rp0</b><span>selamanya</span></p><ul class="plan__list"><li>Website portofolio dari CV</li><li>Alamat portalio.id/myweb/namamu</li><li>Bisa dibuat dan diubah dari HP</li></ul><div class="plan__actions"><a class="btn btn--outline btn--block" href="https://portalio.id" target="_blank" rel="noopener"><span>Daftar gratis</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></article><article class="plan"><h4 class="plan__name">Standard</h4><p class="plan__price"><b>Rp10.000</b><span>/bulan</span></p><p class="plan__alt">atau Rp100.000/tahun (hemat 2 bulan)</p><ul class="plan__list"><li>Alamat namamu.portalio.id</li><li>Tanpa watermark Portalio</li><li>Bantuan AI untuk mengatur tampilan web</li><li>Integrasi dengan GitHub dan LinkedIn</li><li>Lihat siapa saja yang mampir</li></ul><div class="plan__actions"><a class="btn btn--outline" href="/checkout?paket=portalio-standard-bulanan">Pesan Bulanan</a><a class="btn btn--primary" href="/checkout?paket=portalio-standard-tahunan">Pesan Tahunan</a></div></article><article class="plan"><h4 class="plan__name">Professional</h4><p class="plan__price"><b>Rp50.000</b><span>/bulan</span></p><p class="plan__alt">atau Rp500.000/tahun (hemat 2 bulan)</p><ul class="plan__list"><li>Semua yang ada di Standard</li><li>Domain sendiri namamu.com (gratis untuk paket tahunan)</li><li>Form custom untuk monetisasi produk</li><li>Statistik pengunjung yang lebih lengkap</li><li>Kustomisasi dan kuota portofolio tanpa batas</li></ul><div class="plan__actions"><a class="btn btn--outline" href="/checkout?paket=portalio-professional-bulanan">Pesan Bulanan</a><a class="btn btn--primary" href="/checkout?paket=portalio-professional-tahunan">Pesan Tahunan</a></div></article></div>
+        </div>
+        <div class="price-group" data-reveal>
+          <div class="price-group__head">
+            <span class="show__logo" style="--tint:#E6F2EA"><img src="/assets/img/products/sekretaris-ai.png" alt="" width="30" height="30"></span>
+            <div><h3>Sekretaris AI</h3><p>Sekretaris pribadi 24 jam di WhatsApp.</p></div>
+            <a class="link" href="https://secretary.my.id" target="_blank" rel="noopener"><span>secretary.my.id</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+          </div>
+          <div class="plans"><article class="plan"><h4 class="plan__name">Coba gratis</h4><p class="plan__price"><b>Rp0</b><span>selama 7 hari</span></p><ul class="plan__list"><li>Semua fitur Sekretaris AI</li><li>Langsung aktif, tanpa kode</li><li>Tanpa kartu kredit, berhenti sendiri</li></ul><div class="plan__actions"><a class="btn btn--outline btn--block" href="https://secretary.my.id" target="_blank" rel="noopener"><span>Coba gratis</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a></div></article><article class="plan"><h4 class="plan__name">Profesional</h4><p class="plan__price"><b>Rp500.000</b><span>/bulan</span></p><ul class="plan__list"><li>Siaga 24 jam, setiap hari</li><li>Google, Notion, dan rapat online</li><li>Grup WhatsApp, cari jasa, dan tiket</li><li>Tanpa perpanjangan otomatis</li></ul><div class="plan__actions"><a class="btn btn--primary btn--block" href="/checkout?paket=sekretaris-profesional-bulanan">Pesan Sekarang</a></div></article><article class="plan"><h4 class="plan__name">Eksekutif</h4><p class="plan__price"><b>Rp1.000.000</b><span>/bulan</span></p><ul class="plan__list"><li>Semua yang ada di Profesional</li><li>Percakapan tanpa batas</li><li>Dipasang dan diatur oleh tim kami</li><li>Dihubungi tim dalam 1×24 jam</li></ul><div class="plan__actions"><a class="btn btn--primary btn--block" href="/checkout?paket=sekretaris-eksekutif-bulanan">Pesan Sekarang</a></div></article></div>
+        </div>
+      </div>
+
+      <div class="quote-strip" data-reveal>
+        <div>
+          <h3 data-i18n="price.custom.t">Butuh Docloq, atau jasa pembuatan website dan aplikasi?</h3>
+          <p data-i18n="price.custom.d">Docloq dan proyek pengembangan dihitung sesuai kebutuhan. Ceritakan kebutuhan Anda, kami kirimkan penawaran tertulis.</p>
+        </div>
+        <a class="btn btn--outline" href="#kontak" data-topic="saas"><span data-i18n="price.custom.cta">Minta Penawaran</span><svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <p class="plans__note" data-reveal data-i18n-html="price.note">Harga dalam Rupiah. Paket aktif sesuai masa langganan dan tidak diperpanjang otomatis. Baca <a href="/syarat-ketentuan">Syarat &amp; Ketentuan</a> dan <a href="/kebijakan-pengembalian">Kebijakan Pengembalian Dana</a> sebelum membeli.</p>
     </div>
   </section>
 
@@ -376,15 +431,15 @@
         <ul class="info" data-reveal>
           <li>
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
-            <span><small data-i18n="con.address">Alamat</small><b>Jl. Wayabula No. 60, Kota Bekasi, Jawa Barat</b></span>
-          </li>
-          <li>
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
-            <span><small>Email</small><a data-contact="email"><b data-contact-value></b></a></span>
+            <span><small data-i18n="con.address">Alamat</small><b>Jl. Wayabula No. 60, Kota Bekasi, Jawa Barat 17411</b></span>
           </li>
           <li>
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l1.2-3.6A7.5 7.5 0 1 1 8.6 18.6z"/><path d="M9.2 9.6c.3 1.9 1.4 3.4 3.4 4.4l1-1 1.9.8-.3 1.5c-3.6.2-6.6-2.8-6.6-6.4l1.5-.3.8 1.9z"/></svg>
-            <span><small>WhatsApp</small><a data-contact="whatsapp" target="_blank" rel="noopener"><b data-contact-value></b></a></span>
+            <span><small data-i18n="con.phone">Telepon / WhatsApp</small><a data-contact="whatsapp" href="https://wa.me/6289636458562" target="_blank" rel="noopener"><b data-contact-value>+62 896-3645-8562</b></a></span>
+          </li>
+          <li>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+            <span><small>Email</small><a data-contact="email" href="mailto:team@mvd.ai.id"><b data-contact-value>team@mvd.ai.id</b></a></span>
           </li>
           <li>
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -471,6 +526,7 @@
         <a href="#tentang" data-i18n="nav.about">Tentang Kami</a>
         <a href="#visi-misi" data-i18n="vm.title">Visi &amp; Misi</a>
         <a href="#produk" data-i18n="nav.products">Produk</a>
+        <a href="#harga" data-i18n="nav.price">Harga</a>
         <a href="#kontak" data-i18n="nav.contact">Kontak</a>
       </nav>
 
@@ -496,15 +552,15 @@
         <ul>
           <li>
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
-            <address>Jl. Wayabula No. 60<br>Kota Bekasi, Jawa Barat</address>
-          </li>
-          <li>
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
-            <a data-contact="email"><span data-contact-value></span></a>
+            <address>Jl. Wayabula No. 60<br>Kota Bekasi, Jawa Barat 17411</address>
           </li>
           <li>
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l1.2-3.6A7.5 7.5 0 1 1 8.6 18.6z"/><path d="M9.2 9.6c.3 1.9 1.4 3.4 3.4 4.4l1-1 1.9.8-.3 1.5c-3.6.2-6.6-2.8-6.6-6.4l1.5-.3.8 1.9z"/></svg>
-            <a data-contact="whatsapp" target="_blank" rel="noopener"><span data-contact-value></span></a>
+            <a data-contact="whatsapp" href="https://wa.me/6289636458562" target="_blank" rel="noopener"><span data-contact-value>+62 896-3645-8562</span></a>
+          </li>
+          <li>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+            <a data-contact="email" href="mailto:team@mvd.ai.id"><span data-contact-value>team@mvd.ai.id</span></a>
           </li>
           <li>
             <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -516,7 +572,12 @@
 
     <div class="site-footer__bottom">
       <p>&copy; <span data-year>2026</span> PT Mitra Visi Digital. <span data-i18n="foot.rights">Hak cipta dilindungi.</span></p>
-      <p data-config="nib" hidden>NIB <span data-config-value></span></p>
+      <p data-config="nib">NIB <span data-config-value>0409260102484</span></p>
+      <nav class="site-footer__legal" aria-label="Informasi legal" data-i18n-aria="foot.legal">
+        <a href="/syarat-ketentuan" data-i18n="foot.terms">Syarat &amp; Ketentuan</a>
+        <a href="/kebijakan-privasi" data-i18n="foot.privacy">Kebijakan Privasi</a>
+        <a href="/kebijakan-pengembalian" data-i18n="foot.refund">Kebijakan Pengembalian Dana</a>
+      </nav>
     </div>
   </div>
 </footer>

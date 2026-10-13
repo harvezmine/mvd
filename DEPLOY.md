@@ -27,8 +27,11 @@ Pengunjung ──HTTPS──▶ Cloudflare (DNS, TLS, cache)
 
 | Path | Fungsi |
 |---|---|
-| `public/` | Seluruh isi situs: `index.html`, `404.html`, `assets/`, favicon (`favicon.ico/.svg`, `favicon-32.png`), `site.webmanifest`, `robots.txt`, `sitemap.xml` |
-| `server.js` | Server statis (Node ≥ 18, tanpa dependensi). Ada endpoint `/healthz` |
+| `public/` | Seluruh isi situs: `index.html`, `checkout.html`, `pesanan.html`, halaman kebijakan (`syarat-ketentuan`, `kebijakan-privasi`, `kebijakan-pengembalian`), `404.html`, `assets/`, favicon, `site.webmanifest`, `robots.txt`, `sitemap.xml` |
+| `public/assets/data/catalog.json` | **Satu-satunya sumber harga.** Dibaca beranda, halaman checkout, dan server saat membuat tagihan |
+| `server.js` | Server Node ≥ 18 tanpa dependensi: file statis + API checkout & webhook Xendit. Ada endpoint `/healthz` |
+| `.env.example` | Contoh konfigurasi Xendit. Salin jadi `.env` di server (tidak masuk git) |
+| `data/orders/` | Dibuat otomatis. Satu file JSON per pesanan (berisi data pribadi pembeli, tidak masuk git) |
 | `ecosystem.config.cjs` | Konfigurasi PM2: nama app `mvd-web`, port `3200`, host `127.0.0.1` |
 | `package.json` | Metadata dan skrip pintas (`npm run pm2:start`, dll.) |
 | `DEPLOY.md` | Dokumen ini |
@@ -204,6 +207,8 @@ curl -s -o /dev/null -w '%{http_code}\n' https://mitravisidigital.com/          
 curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' https://www.mitravisidigital.com/
 #   -> 301 https://mitravisidigital.com/
 curl -s -o /dev/null -w '%{http_code}\n' https://mitravisidigital.com/tidak-ada  # -> 404
+curl -s -o /dev/null -w '%{http_code}\n' https://mitravisidigital.com/checkout   # -> 200
+curl -s -o /dev/null -w '%{http_code}\n' https://mitravisidigital.com/kebijakan-pengembalian  # -> 200
 curl -s -o /dev/null -w '%{http_code}\n' https://mitravisidigital.com/server.js  # -> 404 (tidak boleh 200)
 ```
 
@@ -237,22 +242,105 @@ Rollback cepat: `git log --oneline`, lalu `git checkout <commit_sebelumnya> -- p
 
 ---
 
-## 8. Sebelum go-live (konten)
+## 8. Checkout & Xendit
 
-Isi data yang masih kosong di `public/assets/js/site.js`, blok `CONFIG` di bagian atas:
+Alur pembelian: **Harga** di beranda → `/checkout?paket=<id>` → `POST /api/checkout`
+→ halaman pembayaran Xendit (Invoice) → kembali ke `/pesanan?id=<nomor>`.
+Harga **selalu** dihitung server dari `catalog.json`, bukan dari browser.
+
+### 8a. Tanpa kunci Xendit (sementara, mis. saat verifikasi)
+
+Checkout tetap berfungsi: pesanan disimpan di `data/orders/<nomor>.json`, pembeli
+melihat halaman "Pesanan Anda sudah kami terima", dan tim menghubungi pembeli
+untuk tautan pembayaran. Pesanan baru juga tercatat di log:
+
+```bash
+pm2 logs mvd-web --lines 50 | grep "Pesanan"
+ls -lt "$APP_DIR/data/orders" | head
+```
+
+### 8b. Mengaktifkan pembayaran Xendit
+
+1. Xendit Dashboard → **Settings → Developers → API Keys** → buat *secret key*
+   dengan izin **Money-in: Write**. Mulai dengan kunci TEST (`xnd_development_…`).
+2. Xendit Dashboard → **Settings → Developers → Webhooks**:
+   - Salin **Verification token**.
+   - Isi URL untuk event **Invoices paid**:
+     `https://mitravisidigital.com/api/xendit/webhook`
+3. Di server:
+   ```bash
+   cd "$APP_DIR"
+   cp .env.example .env
+   nano .env        # isi XENDIT_SECRET_KEY dan XENDIT_CALLBACK_TOKEN
+   chmod 600 .env
+   pm2 reload ecosystem.config.cjs --update-env
+   pm2 logs mvd-web --lines 5   # harus muncul "Xendit aktif (mode TEST)" dan "webhook aktif"
+   ```
+4. Uji: pesan paket termurah di `/checkout`, bayar di halaman tes Xendit (simulasi
+   pembayaran tersedia di mode TEST), lalu pastikan `/pesanan?id=…` menjadi
+   **Lunas** dan log berisi `Pesanan LUNAS: …`.
+5. Setelah akun Xendit disetujui, ganti `XENDIT_SECRET_KEY` dengan kunci LIVE
+   (`xnd_production_…`), samakan token webhook mode LIVE, lalu reload lagi.
+
+Catatan:
+- Status pesanan juga dicek langsung ke Xendit saat halaman `/pesanan` dibuka,
+  jadi tetap akurat walau webhook terlambat.
+- Webhook dengan token salah ditolak (401); pembayaran kurang dari nilai pesanan
+  tidak dianggap lunas.
+- Batas: 8 pesanan per IP per 10 menit (mencegah spam tagihan).
+
+### 8c. Aktivasi paket setelah pembayaran (manual)
+
+Checkout menjual paket langganan **Portalio** dan **Sekretaris AI**. Pembayaran di
+mitravisidigital.com belum terhubung otomatis ke sistem masing-masing produk, jadi
+setiap pesanan lunas perlu diaktifkan oleh tim pada hari kerja berikutnya:
+
+```bash
+pm2 logs mvd-web --lines 200 | grep "Pesanan LUNAS"
+cat "$APP_DIR/data/orders/<NOMOR>.json"   # product_id, package_id, period, customer.email/phone
+```
+
+- `product_id: portalio`: aktifkan paket pada akun Portalio dengan `customer.email`.
+- `product_id: sekretaris-ai`: aktifkan paket untuk nomor `customer.phone`.
+- Kirim konfirmasi ke pembeli lewat WhatsApp atau email.
+
+### 8d. Mengubah harga atau paket
+
+Edit `public/assets/data/catalog.json` saja: `products[] → plans[] → options[]`.
+Setiap pilihan yang bisa dibeli punya `sku` unik dan `price` dalam Rupiah (tanpa titik).
+Paket tanpa `options` (Gratis / Coba gratis) hanya tampil dengan tombol ke situs produk.
+Harga **harus sama** dengan harga resmi di portalio.id dan secretary.my.id. Tidak perlu
+restart. Samakan juga harga di JSON-LD `hasOfferCatalog` di `public/index.html`.
+
+### 8e. Backup data pesanan
+
+`data/orders/` berisi data pribadi pembeli. Jangan masuk git, dan backup berkala:
+
+```bash
+tar czf ~/backup/mvd-orders-$(date +%F).tgz -C "$APP_DIR" data/orders
+```
+
+---
+
+## 9. Sebelum go-live (konten)
+
+Data kontak ada di `public/assets/js/site.js`, blok `CONFIG` di bagian atas:
 
 ```js
 var CONFIG = {
-  whatsapp: '',   // format internasional tanpa +, contoh '6281234567890'
-  email:    '',   // contoh 'halo@mitravisidigital.com'
-  nib:      ''    // Nomor Induk Berusaha
+  whatsapp: '6289636458562', // sudah diisi (nomor dari data legal PT di Portalio)
+  email:    'team@mvd.ai.id',
+  nib:      '0409260102484'   // Nomor Induk Berusaha
 };
 ```
 
-Selama kosong, kontak tampil "Segera tersedia" dan formulir menampilkan
-pemberitahuan bahwa kontak belum aktif. Checklist lain:
+Kontak yang kosong otomatis disembunyikan. Nomor telepon juga tertulis langsung di
+HTML (beranda, footer semua halaman, halaman kebijakan), jadi bila nomor berganti,
+cari & ganti `6289636458562` dan `+62 896-3645-8562` di folder `public/` (begitu juga
+email `team@mvd.ai.id` dan NIB `0409260102484`, yang juga tertulis langsung di HTML). Checklist lain:
 
-- [ ] Tambahkan `email`, `telephone`, dan NIB ke JSON-LD `Organization` di `public/index.html`.
+- [x] Telepon, email, alamat (kode pos 17411), dan NIB sudah terpasang di halaman & JSON-LD.
+- [ ] Tinjau isi Syarat & Ketentuan dan Kebijakan Pengembalian Dana (terutama kebijakan refund Sekretaris AI).
 - [x] Logo resmi sudah terpasang (`public/assets/img/brand/`). Sumber aslinya `public/assets/logo-putih.png`.
 - [ ] Ganti foto Unsplash dengan foto tim/kantor asli (`public/assets/img/photos/`, kredit di `CREDITS.md`).
 - [ ] Pastikan pin peta (Jl. Wayabula No. 60) sudah benar.
@@ -260,7 +348,7 @@ pemberitahuan bahwa kontak belum aktif. Checklist lain:
 
 ---
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 | Gejala | Kemungkinan penyebab | Cek / perbaikan |
 |---|---|---|
@@ -270,6 +358,9 @@ pemberitahuan bahwa kontak belum aktif. Checklist lain:
 | Browser: **502 Bad Gateway** | tunnel hidup tapi origin tak terjangkau | URL public hostname harus `localhost:3200` (Opsi A) atau `host.docker.internal:3200` (Opsi B) |
 | Opsi B tetap 502 | server masih di `127.0.0.1` | `HOST: '0.0.0.0'` + `pm2 reload ... --update-env`; cek `extra_hosts` |
 | Error **1000/1014 / DNS** | record lama bentrok | Hapus A/CNAME lama untuk `@`/`www`, biarkan CNAME tunnel |
+| Checkout: "Halaman pembayaran belum bisa dibuat" | kunci Xendit salah/izin kurang | `pm2 logs mvd-web` → baris `Gagal membuat tagihan`; cek `XENDIT_SECRET_KEY` & izin Money-in Write |
+| Pesanan tidak jadi "Lunas" | webhook belum diset / token beda | Cek URL webhook & `XENDIT_CALLBACK_TOKEN`; halaman `/pesanan` tetap mengecek status ke Xendit |
+| `EACCES` saat membuat pesanan | folder `data/` tidak bisa ditulis | `chown -R $USER "$APP_DIR/data"` |
 | `www` tidak dialihkan | `CANONICAL_HOST` tidak terbaca | Pastikan ada di `env` ecosystem lalu `pm2 reload ecosystem.config.cjs --update-env` |
 | Gambar baru tidak muncul | cache browser/Cloudflare (1 hari) | Pakai nama file baru, atau Purge Cache |
 | App mati setelah reboot | `pm2 startup` belum dijalankan | Ulangi bagian 4: `pm2 startup` + `pm2 save` |
